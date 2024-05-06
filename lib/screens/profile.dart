@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -8,7 +9,7 @@ class ProfileScreen extends StatelessWidget {
         title: const Text('Profile'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
       ),
       body: ListView(
@@ -34,7 +35,7 @@ Widget _buildHeader(BuildContext context) {
     leading: const CircleAvatar(
       radius: 30.0,
       // Placeholder for user image, use NetworkImage for actual images
-      backgroundImage: AssetImage('assets/user_placeholder.png'),
+      backgroundImage: AssetImage('images/user_placeholder.png'),
     ),
     title: const Text('Rick Morty', style: TextStyle(fontSize: 24.0)),
     subtitle: const Text('Senior Data Engineer'),

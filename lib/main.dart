@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:winwin/screens/applications.dart';
 import 'package:winwin/screens/chats.dart';
 import 'package:winwin/screens/matcher.dart';
-import 'package:winwin/screens/profile.dart';
+import 'package:go_router/go_router.dart';
+import 'package:winwin/routes.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,13 +13,9 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MainScreen(),
+    return MaterialApp.router(
+      title: 'WinWin',
+      routerConfig: router_configuration,
     );
   }
 }
@@ -51,9 +49,7 @@ class _MainScreenState extends State<MainScreen> {
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ProfileScreen()),
-              );
+              context.go('/profile');
             },
           ),
         ],
@@ -87,32 +83,34 @@ class _MainScreenState extends State<MainScreen> {
   Widget? _buildFloatingActionButtons() {
     // Only return the FAB row when the selected index is 1 (Matcher page)
     if (_selectedIndex == 1) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          FloatingActionButton(
-            onPressed: () {
-            },
-            child: Icon(Icons.close),
-            backgroundColor: Colors.pink,
-          ),
-          FloatingActionButton(
-            onPressed: () {
-            },
-            child: Icon(Icons.more_horiz),
-            backgroundColor: Colors.grey,
-          ),
-          FloatingActionButton(
-            onPressed: () {
-            },
-            child: Icon(Icons.check),
-            backgroundColor: Colors.green,
-          ),
-        ],
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            FloatingActionButton(
+              heroTag: 'close',
+              onPressed: () {},
+              child: Icon(Icons.close),
+              backgroundColor: Colors.pink,
+            ),
+            FloatingActionButton(
+              heroTag: 'more',
+              onPressed: () {},
+              child: Icon(Icons.more_horiz),
+              backgroundColor: Colors.grey,
+            ),
+            FloatingActionButton(
+              heroTag: 'check',
+              onPressed: () {},
+              child: Icon(Icons.check),
+              backgroundColor: Colors.green,
+            ),
+          ],
+        ),
       );
     } else {
       return null;
     }
   }
 }
-
