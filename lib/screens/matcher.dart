@@ -10,16 +10,16 @@ class MatcherScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => JobPositionViewModel(
         jobPositionRepository: Provider.of(context, listen: false),
-      )..fetchRecommendedJobPositions("123"),  // Fetch recommendations on creation
+      )..fetchRecommendedJobPositions("123"),  // TODO: add actual candidate ID
       child: Scaffold(
         body: Consumer<JobPositionViewModel>(
           builder: (context, viewModel, child) {
             if (viewModel.isLoading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (viewModel.errorMessage != null) {
               return Center(child: Text(viewModel.errorMessage!));
             } else if (viewModel.jobPositions.isEmpty) {
-              return Center(child: Text('No recommendations available.'));
+              return const Center(child: Text('No recommendations available.'));
             } else {
               final swipeItems = viewModel.jobPositions.map((jobPosition) {
                 return SwipeItem(
@@ -36,7 +36,7 @@ class MatcherScreen extends StatelessWidget {
                 },
                 onStackFinished: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("No more job positions available")),
+                    const SnackBar(content: Text("No more job positions available")),
                   );
                 },
                 upSwipeAllowed: true,
@@ -53,62 +53,62 @@ class MatcherScreen extends StatelessWidget {
 class JobPositionCard extends StatelessWidget {
   final JobPosition jobPosition;
 
-  JobPositionCard(this.jobPosition);
+  const JobPositionCard(this.jobPosition, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
           ListTile(
             title: Text(jobPosition.title),
             subtitle: Text(jobPosition.company?.name ?? 'Unknown Company'),
-            trailing: Icon(Icons.arrow_forward),
+            trailing: const Icon(Icons.arrow_forward),
           ),
           Wrap(
             spacing: 8.0,
             children: jobPosition.skills.map((skill) => Chip(label: Text(skill.getSkill() ?? '-'))).toList(),
           ),
-          Divider(),
+          const Divider(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Icon(Icons.computer, color: Colors.green),
-                Text('Remote'),
-                Icon(Icons.work, color: Colors.blue),
+                const Icon(Icons.computer, color: Colors.green),
+                const Text('Remote'),
+                const Icon(Icons.work, color: Colors.blue),
                 Text(jobPosition.workTime),
-                Icon(Icons.business_center, color: Colors.orange),
+                const Icon(Icons.business_center, color: Colors.orange),
                 Text(jobPosition.contractType),
               ],
             ),
           ),
-          Divider(),
+          const Divider(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Row(
                   children: [
-                    Icon(Icons.language, color: Colors.green),
+                    const Icon(Icons.language, color: Colors.green),
                     Text(jobPosition.languages.map((lang) => lang.getLanguage() ?? '-').join(', ')),
                   ],
                 ),
                 Row(
                   children: [
-                    Icon(Icons.work, color: Colors.black),
+                    const Icon(Icons.work, color: Colors.black),
                     Text('${jobPosition.experience}+ years'),
                   ],
                 ),
               ],
             ),
           ),
-          Divider(),
+          const Divider(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Slider(
               min: jobPosition.salaryStart.toDouble(),
               max: jobPosition.salaryEnd.toDouble(),
@@ -119,7 +119,7 @@ class JobPositionCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(jobPosition.description),
           ),
         ],

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:winwin/data/datasource/application_remote_data_source.dart';
 import 'package:winwin/data/datasource/job_position_remote_data_source.dart';
+import 'package:winwin/data/repository/application_repository.dart';
 import 'package:winwin/data/repository/job_position_repository.dart';
+import 'package:winwin/data/view_model/application_view_model.dart';
 import 'package:winwin/screens/applications.dart';
 import 'package:winwin/screens/chats.dart';
 import 'package:winwin/screens/matcher.dart';
@@ -28,11 +31,27 @@ class MyApp extends StatelessWidget {
           ),
         ),
         Provider(
+          create: (context) => ApplicationRemoteDataSourceImpl(
+            client: RestClient(env: "development"),
+          ),
+        ),
+        Provider(
           create: (context) => JobPositionRepository(
             jobPositionRemoteDataSource: Provider.of(context, listen: false),
             networkInfo: Provider.of(context, listen: false),
           ),
         ),
+        Provider(
+          create: (context) => ApplicationRepository(
+            applicationRemoteDataSource: Provider.of(context, listen: false),
+            networkInfo: Provider.of(context, listen: false),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ApplicationViewModel(
+            applicationRepository: Provider.of(context, listen: false),
+          ),
+        )
       ],
       child: MaterialApp.router(
         title: 'WinWin',

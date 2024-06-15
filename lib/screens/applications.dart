@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:winwin/data/view_model/application_view_model.dart';
 
-class ApplicationsScreen extends StatelessWidget {
+class ApplicationsScreen extends StatefulWidget {
+  @override
+  _ApplicationsScreenState createState() => _ApplicationsScreenState();
+}
+
+class _ApplicationsScreenState extends State<ApplicationsScreen> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    final applicationViewModel = Provider.of<ApplicationViewModel>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Job Applications'),
+      ),
+      body: Column(
         children: <Widget>[
           Container(
             margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -16,12 +29,34 @@ class ApplicationsScreen extends StatelessWidget {
               ],
             ),
           ),
-          _buildJobCard('DevOps Specialist', 'Google', 'Wroclaw, Poland', 'Awaiting response', Colors.red),
-          _buildJobCard('Senior Software Engineer', 'Apple', 'Wroclaw, Poland', 'Not matching', Colors.grey),
-          _buildJobCard('Junior Accountant', 'Meta', 'Remote', 'Invited for the interview', Colors.blue),
-          _buildJobCard('Junior Accountant', 'Amazon', 'Remote', 'Job offer', Colors.green),
+          Expanded(
+            child: applicationViewModel.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: applicationViewModel.applications.length,
+                    itemBuilder: (context, index) {
+                      final application = applicationViewModel.applications[index];
+                      return _buildJobCard(
+                        application.jobPosition?.title ?? 'Unknown Position',
+                        application.jobPosition?.company?.name ?? 'Unknown Company',
+                        'Location unknown', // Update if location is available
+                        application.status,
+                        _getStatusColor(application.status),
+                      );
+                    },
+                  ),
+          ),
         ],
+      ),
     );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final applicationViewModel = Provider.of<ApplicationViewModel>(context, listen: false);
+      applicationViewModel.fetchCandidateApplications('03bbc451-57ab-4412-9700-9aab8c00396c'); // Fetch applications for candidate ID 123
+    });
   }
 
   Widget _buildFilterChip(String label, bool isSelected) {
@@ -56,5 +91,20 @@ class ApplicationsScreen extends StatelessWidget {
         trailing: Icon(Icons.chat),
       ),
     );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'Awaiting response':
+        return Colors.red;
+      case 'Not matching':
+        return Colors.grey;
+      case 'Invited for the interview':
+        return Colors.blue;
+      case 'Job offer':
+        return Colors.green;
+      default:
+        return Colors.black;
+    }
   }
 }

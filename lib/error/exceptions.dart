@@ -22,3 +22,7 @@ class RegisterException extends FetchException {
 class SettingsFetchException extends FetchException {
   const SettingsFetchException([String? message]) : super(message);
 }
+
+class ApplicationFetchException extends FetchException {
+  const ApplicationFetchException([String? message]) : super(message);
+}

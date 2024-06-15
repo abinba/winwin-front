@@ -44,7 +44,7 @@ class JobPosition {
     required this.salaryCurrency,
     required this.description,
     required this.verified,
-    this.company,
+    required this.company,
     required this.skills,
     required this.languages,
     required this.representative,
@@ -62,11 +62,11 @@ class JobPosition {
   String salaryCurrency;
   String description;
   bool verified;
-  Company? company;
-  List<JobPositionSkill> skills;
-  List<JobPositionLanguage> languages;
+  Company company;
   Representative representative;
-  List<Application> applications;
+  List<JobPositionSkill>? skills;
+  List<JobPositionLanguage>? languages;
+  List<Application>? applications;
 
   factory JobPosition.fromJson(Map<String, dynamic> json) {
     return JobPosition(
@@ -81,11 +81,11 @@ class JobPosition {
       salaryCurrency: json['salary_currency'],
       description: json['description'],
       verified: json['verified'],
-      company: json['company'] != null ? Company.fromJson(json['company']) : null,
-      skills: (json['skills'] as List).map((i) => JobPositionSkill.fromJson(i)).toList(),
-      languages: (json['languages'] as List).map((i) => JobPositionLanguage.fromJson(i)).toList(),
       representative: Representative.fromJson(json['representative']),
-      applications: (json['applications'] as List).map((i) => Application.fromJson(i)).toList(),
+      company: Company.fromJson(json['company']),
+      skills: json['skills'] != null ? (json['skills'] as List).map((i) => JobPositionSkill.fromJson(i)).toList() : null,
+      languages: json['language'] != null ? (json['languages'] as List).map((i) => JobPositionLanguage.fromJson(i)).toList() : null,
+      applications: json['applications'] != null ? (json['applications'] as List).map((i) => Application.fromJson(i)).toList() : null,
     );
   }
 
@@ -102,11 +102,11 @@ class JobPosition {
       'salary_currency': salaryCurrency,
       'description': description,
       'verified': verified,
-      'company': company?.toJson(),
-      'skills': skills.map((e) => e.toJson()).toList(),
-      'languages': languages.map((e) => e.toJson()).toList(),
+      'company': company.toJson(),
+      'skills': skills?.map((e) => e.toJson()).toList(),
+      'languages': languages?.map((e) => e.toJson()).toList(),
       'representative': representative.toJson(),
-      'applications': applications.map((e) => e.toJson()).toList(),
+      'applications': applications?.map((e) => e.toJson()).toList(),
     };
   }
 

@@ -1,4 +1,29 @@
-import 'package:winwin/data/model/candidate.dart';
+import 'package:winwin/data/model/job_position.dart';
+
+class ApplicationListResponseModel {
+  ApplicationListResponseModel({
+    required this.applications,
+  });
+
+  List<Application> applications;
+
+  factory ApplicationListResponseModel.fromJson(List<dynamic> json) {
+    List<Application> applications = [];
+    for (var application in json) {
+      applications.add(Application.fromJson(application));
+    }
+    return ApplicationListResponseModel(applications: applications);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'applications': applications.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  @override
+  String toString() => 'ApplicationList(applications: $applications)';
+}
 
 class Application {
   Application({
@@ -6,14 +31,14 @@ class Application {
     required this.candidateId,
     required this.jobPositionId,
     required this.status,
-    this.candidate,
+    this.jobPosition,
   });
 
   String applicationId;
   String candidateId;
   String jobPositionId;
   String status;
-  Candidate? candidate;
+  JobPosition? jobPosition;
 
   factory Application.fromJson(Map<String, dynamic> json) {
     return Application(
@@ -21,7 +46,7 @@ class Application {
       candidateId: json['candidate_id'],
       jobPositionId: json['job_position_id'],
       status: json['status'],
-      candidate: json['candidate'] != null ? Candidate.fromJson(json['candidate']) : null,
+      jobPosition: json['job_position'] != null ? JobPosition.fromJson(json['job_position']) : null,
     );
   }
 
@@ -31,12 +56,12 @@ class Application {
       'candidate_id': candidateId,
       'job_position_id': jobPositionId,
       'status': status,
-      'candidate': candidate?.toJson(),
+      'job_position': jobPosition?.toJson(),
     };
   }
 
   @override
   String toString() {
-    return 'Application(applicationId: $applicationId, candidateId: $candidateId, jobPositionId: $jobPositionId, status: $status, candidate: $candidate)';
+    return 'Application(applicationId: $applicationId, candidateId: $candidateId, jobPositionId: $jobPositionId, status: $status, jobPosition: $jobPosition)';
   }
 }
