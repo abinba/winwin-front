@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:winwin/data/datasource/job_position_remote_data_source.dart';
+import 'package:winwin/data/repository/job_position_repository.dart';
 import 'package:winwin/screens/applications.dart';
 import 'package:winwin/screens/chats.dart';
 import 'package:winwin/screens/matcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:winwin/routes.dart';
+import 'package:winwin/services/network_info.dart';
+import 'package:winwin/services/restclient.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,9 +17,27 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'WinWin',
-      routerConfig: router_configuration,
+    return MultiProvider(
+      providers: [
+        Provider(
+          create: (_) => NetworkInfoImpl(),
+        ),
+        Provider(
+          create: (context) => JobPositionRemoteDataSourceImpl(
+            client: RestClient(env: "development"), // Provide your RestClient instance here
+          ),
+        ),
+        Provider(
+          create: (context) => JobPositionRepository(
+            jobPositionRemoteDataSource: Provider.of(context, listen: false),
+            networkInfo: Provider.of(context, listen: false),
+          ),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'WinWin',
+        routerConfig: router_configuration,
+      ),
     );
   }
 }
