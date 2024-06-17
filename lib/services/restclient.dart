@@ -35,8 +35,8 @@ class RestClient {
   }
 
   Map<String, String> default_headers = {
-    "CONTENT_TYPE": 'application/json',
-    "ACCEPT": 'application/json',
+    "Content-Type": 'application/json',
+    "Accept": 'application/json',
   };
 
   Future<MappedNetworkServiceResponse<T>> get<T>(String resourcePath,

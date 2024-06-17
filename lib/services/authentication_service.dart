@@ -1,59 +1,56 @@
-import 'package:winwin/config/constant_config.dart';
-import 'package:winwin/error/exceptions.dart';
-import 'package:winwin/services/network_service_response.dart';
+import 'package:flutter/material.dart';
+import 'package:winwin/providers/candidate_provider.dart';
 import 'package:winwin/services/restclient.dart';
+import 'package:winwin/data/model/candidate.dart';
+import 'package:provider/provider.dart';
 
+class AuthService {
+  final RestClient _restClient;
 
-class AuthenticationService{
-  RestClient client = RestClient();
-  final ConstantConfig constantConfig = ConstantConfig();
+  AuthService(this._restClient);
 
+  Future<bool> login(
+      BuildContext context, String email, String password) async {
+    final response = await _restClient.post('/api/v1/login_method/login', {
+      'email': email,
+      'password': password,
+      'role': 'candidate',
+    });
 
-  Future<Object> register(String? username, String? login_mail, String? login_password) async {
-    MappedNetworkServiceResponse response;
-    if (username == null || login_mail == null || login_password == null) {
-      print("not wokring regsiter");
-      return "incorrect stuff";
-    } else {
-      response = await client.post(
-        '/api/v1/loginMethods',
-        {
-          'username': username,
-          'login_email': login_mail,
-          'login_password': login_password
-        }
-      );
-    }
     if (response.networkServiceResponse.success) {
-      return response;
+      final data = response.mappedResult;
+      if (data['message'] != 'success') {
+        print(data['message']);
+        return false;
+      }
+      final candidate = Candidate.fromJson(data['candidate']);
+      final token = data['token'];
+      Provider.of<CandidateProvider>(context, listen: false)
+          .setCandidate(candidate, token);
+      return true;
     } else {
-      throw RegisterException(response.networkServiceResponse.message);
+      return false;
     }
   }
 
-  Future<bool> login(String? login_mail, String? login_password) async {
-    MappedNetworkServiceResponse response;
-    if (login_mail == null || login_password == null) {
-      return false;
-    } else {
-      response = await client.get(
-        '/api/v1/login_method',
-        queryParameters: {
-          'login_email': login_mail,
-          'login_password': login_password
-        },
-      );
-    }
+  Future<bool> register(BuildContext context, String email, String password,
+      String firstName, String lastName) async {
+    final response = await _restClient.post('/api/v1/login_method/', {
+      'email': email,
+      'password': password,
+      'role': 'candidate',
+      'first_name': firstName,
+      'last_name': lastName,
+    });
+
     if (response.networkServiceResponse.success) {
-      for (int i =0; i<response.mappedResult.length; i++){
-        print(response.mappedResult[i]['login_email']);
-        if (login_mail == response.mappedResult[i]['login_email']){
-          return true;
-        }
+      final data = response.mappedResult;
+      if (!data.containsKey("candidate")) {
+        return false;
       }
-      return false;
+      return true;
     } else {
-      throw RegisterException(response.networkServiceResponse.message);
+      return false;
     }
   }
 }

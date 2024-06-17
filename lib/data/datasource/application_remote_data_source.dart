@@ -5,8 +5,10 @@ import 'package:winwin/services/restclient.dart';
 
 abstract class ApplicationRemoteDataSource {
   Future<Application> apply(String candidateId, String jobPositionId);
-  Future<ApplicationListResponseModel> getCandidateApplications(String candidateId);
-  Future<ApplicationListResponseModel> getJobPositionApplications(String jobPositionId);
+  Future<ApplicationListResponseModel> getCandidateApplications(
+      String candidateId);
+  Future<ApplicationListResponseModel> getJobPositionApplications(
+      String jobPositionId);
   Future<Application> getApplication(int applicationId);
 }
 
@@ -16,7 +18,8 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
   ApplicationRemoteDataSourceImpl({required this.client});
 
   @override
-  Future<ApplicationListResponseModel> getCandidateApplications(String candidateId) async {
+  Future<ApplicationListResponseModel> getCandidateApplications(
+      String candidateId) async {
     MappedNetworkServiceResponse response;
     response = await client.get(
       '/api/v1/candidate/applications',
@@ -35,12 +38,13 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
   Future<Application> apply(String candidateId, String jobPositionId) async {
     MappedNetworkServiceResponse response;
     response = await client.post(
-      '/api/v1/candidate/apply',
+      '/api/v1/candidate/apply/',
       {
         'candidate_id': candidateId,
         'job_position_id': jobPositionId,
       },
     );
+    print(response.networkServiceResponse.message);
     if (response.networkServiceResponse.success) {
       return Application.fromJson(response.mappedResult);
     } else {
@@ -49,7 +53,8 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
   }
 
   @override
-  Future<ApplicationListResponseModel> getJobPositionApplications(String jobPositionId) async {
+  Future<ApplicationListResponseModel> getJobPositionApplications(
+      String jobPositionId) async {
     MappedNetworkServiceResponse response;
     response = await client.get(
       '/api/v1/company/applications',

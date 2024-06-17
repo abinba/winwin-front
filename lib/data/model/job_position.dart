@@ -2,9 +2,7 @@ import 'package:winwin/data/model/application.dart';
 import 'package:winwin/data/model/company.dart';
 import 'package:winwin/data/model/job_position_language.dart';
 import 'package:winwin/data/model/job_position_skill.dart';
-import 'package:winwin/data/model/language.dart';
 import 'package:winwin/data/model/representative.dart';
-import 'package:winwin/data/model/skill.dart';
 
 class JobPositionListResponseModel {
   JobPositionListResponseModel({
@@ -64,9 +62,9 @@ class JobPosition {
   bool verified;
   Company company;
   Representative representative;
-  List<JobPositionSkill>? skills;
-  List<JobPositionLanguage>? languages;
-  List<Application>? applications;
+  List<JobPositionSkill> skills;
+  List<JobPositionLanguage> languages;
+  List<Application> applications;
 
   factory JobPosition.fromJson(Map<String, dynamic> json) {
     return JobPosition(
@@ -83,9 +81,9 @@ class JobPosition {
       verified: json['verified'],
       representative: Representative.fromJson(json['representative']),
       company: Company.fromJson(json['company']),
-      skills: json['skills'] != null ? (json['skills'] as List).map((i) => JobPositionSkill.fromJson(i)).toList() : null,
-      languages: json['language'] != null ? (json['languages'] as List).map((i) => JobPositionLanguage.fromJson(i)).toList() : null,
-      applications: json['applications'] != null ? (json['applications'] as List).map((i) => Application.fromJson(i)).toList() : null,
+      skills: json['skills'] != null ? (json['skills'] as List).map((i) => JobPositionSkill.fromJson(i)).toList() : List.empty(),
+      languages: json['languages'] != null ? (json['languages'] as List).map((i) => JobPositionLanguage.fromJson(i)).toList() : List.empty(),
+      applications: json['applications'] != null ? (json['applications'] as List).map((i) => Application.fromJson(i)).toList() : List.empty(),
     );
   }
 
@@ -103,10 +101,10 @@ class JobPosition {
       'description': description,
       'verified': verified,
       'company': company.toJson(),
-      'skills': skills?.map((e) => e.toJson()).toList(),
-      'languages': languages?.map((e) => e.toJson()).toList(),
+      'skills': skills.map((e) => e.toJson()).toList(),
+      'languages': languages.map((e) => e.toJson()).toList(),
       'representative': representative.toJson(),
-      'applications': applications?.map((e) => e.toJson()).toList(),
+      'applications': applications.map((e) => e.toJson()).toList(),
     };
   }
 
