@@ -6,7 +6,7 @@ import 'package:winwin/services/restclient.dart';
 abstract class ApplicationRemoteDataSource {
   Future<Application> apply(String candidateId, String jobPositionId);
   Future<ApplicationListResponseModel> getCandidateApplications(
-      String candidateId);
+      String candidateId, String? statusId);
   Future<ApplicationListResponseModel> getJobPositionApplications(
       String jobPositionId);
   Future<Application> getApplication(int applicationId);
@@ -19,13 +19,17 @@ class ApplicationRemoteDataSourceImpl implements ApplicationRemoteDataSource {
 
   @override
   Future<ApplicationListResponseModel> getCandidateApplications(
-      String candidateId) async {
+      String candidateId, String? statusId) async {
     MappedNetworkServiceResponse response;
+    var queryParameters = {
+      'candidate_id': candidateId,
+    };
+    if (statusId != null) {
+      queryParameters['status_id'] = statusId;
+    }
     response = await client.get(
       '/api/v1/candidate/applications',
-      queryParameters: {
-        'candidate_id': candidateId,
-      },
+      queryParameters: queryParameters,
     );
     if (response.networkServiceResponse.success) {
       return ApplicationListResponseModel.fromJson(response.mappedResult);

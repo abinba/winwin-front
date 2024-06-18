@@ -32,7 +32,7 @@ class JobPositionRepository {
     }
   }
 
-  Future<Either<Failure, JobPosition>> getJobPosition(int jobPositionId) async {
+  Future<Either<Failure, JobPosition>> getJobPosition(String jobPositionId) async {
     var isConnected = await networkInfo.isConnected;
     if (isConnected) {
       try {

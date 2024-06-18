@@ -56,6 +56,9 @@ class MyApp extends StatelessWidget {
             jobPositionRepository: Provider.of(context, listen: false),
           ),
         ),
+        ChangeNotifierProvider(create: (context) => SingleJobPositionViewModel
+          (jobPositionRepository: Provider.of(context, listen: false)),
+        ),
         ChangeNotifierProvider(
           create: (context) => MatchEngineProvider(),
         ),

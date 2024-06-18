@@ -37,3 +37,38 @@ class JobPositionViewModel extends ChangeNotifier {
     }
   }
 }
+
+class SingleJobPositionViewModel extends ChangeNotifier {
+  final JobPositionRepository jobPositionRepository;
+
+  SingleJobPositionViewModel({required this.jobPositionRepository});
+
+  JobPosition? _jobPosition;
+  JobPosition? get jobPosition => _jobPosition;
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
+  Future<void> fetchJobPosition(String jobPositionId) async {
+    if (_jobPosition == null) {
+      _isLoading = true;
+      notifyListeners();
+
+      final result = await jobPositionRepository.getJobPosition(jobPositionId);
+      result.fold(
+        (failure) {
+          _errorMessage = failure.toString();
+        },
+        (jobPosition) {
+          _jobPosition = jobPosition;
+        },
+      );
+
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}

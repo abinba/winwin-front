@@ -35,8 +35,8 @@ Widget _buildChatItem(
         child: Icon(companyLogo),
         backgroundColor: Colors.grey,
       ),
-      title: Text(companyName),
-      subtitle: Text(position),
+      title: Text(companyName, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+      subtitle: Text(position, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
       trailing: IconButton(
         icon: Icon(Icons.chat),
         onPressed: () {

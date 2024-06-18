@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:winwin/providers/candidate_provider.dart';
+import 'package:winwin/screens/candidate/job_position.dart';
 import 'package:winwin/screens/candidate/login.dart';
 import 'package:winwin/screens/candidate/main_screen.dart';
 import 'package:winwin/screens/candidate/profile.dart';
@@ -41,6 +42,13 @@ final GoRouter router_configuration = GoRouter(
             return CandidateSignupPage();
           },
         ),
+        GoRoute(
+          path: 'position',
+          builder: (BuildContext context, GoRouterState state) {
+             String jobPositionId = state.uri.queryParameters["id"] ?? "";
+            return JobPositionDetailPage(jobPositionId: jobPositionId);
+          },
+        )
       ],
     ),
   ],

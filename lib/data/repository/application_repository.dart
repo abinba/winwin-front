@@ -29,11 +29,11 @@ class ApplicationRepository {
     }
   }
 
-  Future<Either<Failure, ApplicationListResponseModel>> getCandidateApplications(String candidateId) async {
+  Future<Either<Failure, ApplicationListResponseModel>> getCandidateApplications(String candidateId, String? statusId) async {
     var isConnected = await networkInfo.isConnected;
     if (isConnected) {
       try {
-        var response = await applicationRemoteDataSource.getCandidateApplications(candidateId);
+        var response = await applicationRemoteDataSource.getCandidateApplications(candidateId, statusId );
         return Right(response);
       } on ApplicationFetchException catch (error) {
         String message = error.message ?? 'Something went wrong';

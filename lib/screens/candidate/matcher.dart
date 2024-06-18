@@ -23,33 +23,37 @@ class _MatcherScreenState extends State<MatcherScreen> {
       final jobPositionViewModel =
           Provider.of<JobPositionViewModel>(context, listen: false);
       final candidateProvider =
-                    Provider.of<CandidateProvider>(context, listen: false);
-      jobPositionViewModel.fetchRecommendedJobPositions(candidateProvider.candidate!.candidateId).then((_) {
+          Provider.of<CandidateProvider>(context, listen: false);
+      jobPositionViewModel
+          .fetchRecommendedJobPositions(
+              candidateProvider.candidate!.candidateId)
+          .then((_) {
         setState(() {
           _swipeItems = jobPositionViewModel.jobPositions.map((jobPosition) {
             return SwipeItem(
-              content: JobPositionCard(jobPosition),
-              likeAction: () {
-                final applicationRepository =
-                    Provider.of<ApplicationRepository>(context, listen: false);
-                if (candidateProvider.candidate?.candidateId != null) {
-                  applicationRepository.apply(
-                      candidateProvider.candidate!.candidateId, jobPosition.id);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: JobPositionCard(jobPosition),
+                likeAction: () {
+                  final applicationRepository =
+                      Provider.of<ApplicationRepository>(context,
+                          listen: false);
+                  if (candidateProvider.candidate?.candidateId != null) {
+                    applicationRepository.apply(
+                        candidateProvider.candidate!.candidateId,
+                        jobPosition.id);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("Applied to ${jobPosition.company.name}!"),
                       duration: const Duration(milliseconds: 750),
-                  ));
-                } else {
-                  _showLoginDialog();
-                }
-              },
-              nopeAction: () {
-                // Handle nope action
-              },
-              superlikeAction: () {
-                // Handle more information button
-              }
-            );
+                    ));
+                  } else {
+                    _showLoginDialog();
+                  }
+                },
+                nopeAction: () {
+                  // Handle nope action
+                },
+                superlikeAction: (jobPositionId) {
+                  context.go('/position?id=$jobPositionId');
+                });
           }).toList();
           Provider.of<MatchEngineProvider>(context, listen: false)
               .setSwipeItems(_swipeItems);
@@ -110,7 +114,8 @@ class _MatcherScreenState extends State<MatcherScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 // Navigate to login screen
-                context.go('/candidate/login'); // Adjust the route according to your app
+                context.go(
+                    '/candidate/login'); // Adjust the route according to your app
               },
             ),
             TextButton(
@@ -118,7 +123,8 @@ class _MatcherScreenState extends State<MatcherScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 // Navigate to sign up screen
-                context.go('/candidate/signup'); // Adjust the route according to your app
+                context.go(
+                    '/candidate/signup'); // Adjust the route according to your app
               },
             ),
           ],
@@ -141,14 +147,18 @@ class JobPositionCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text(jobPosition.title, style: TextStyle(color: Colors.white)),
-            subtitle: Text(jobPosition.company?.name ?? 'Unknown Company', style: TextStyle(color: Colors.white)),
+            title:
+                Text(jobPosition.title, style: TextStyle(color: Colors.white)),
+            subtitle: Text(jobPosition.company?.name ?? 'Unknown Company',
+                style: TextStyle(color: Colors.white)),
             trailing: Icon(Icons.arrow_forward, color: Colors.white),
           ),
           Wrap(
             spacing: 8.0,
             children: jobPosition.skills
-                .map((skill) => Chip(label: Text(skill.getSkill() ?? '-')))
+                .map((skill) => Chip(
+                    backgroundColor: Color.fromARGB(255, 79, 55, 139),
+                    label: Text(skill.getSkill() ?? '-')))
                 .toList(),
           ),
           Divider(),
@@ -221,7 +231,10 @@ class JobPositionCard extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text(jobPosition.description),
+            child: Text(jobPosition.description,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 10,
+                style: TextStyle(color: Colors.white70)),
           ),
         ],
       ),

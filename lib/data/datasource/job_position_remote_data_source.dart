@@ -9,7 +9,7 @@ abstract class JobPositionRemoteDataSource {
   ///
   /// Throws a [JobPositionFetchException] for all error codes.
   Future<JobPositionListResponseModel> getRecommendedJobPositions(String? categoryId);
-  Future<JobPosition> getJobPosition(int jobPositionId);
+  Future<JobPosition> getJobPosition(String jobPositionId);
 }
 
 class JobPositionRemoteDataSourceImpl implements JobPositionRemoteDataSource {
@@ -43,10 +43,10 @@ class JobPositionRemoteDataSourceImpl implements JobPositionRemoteDataSource {
   }
 
   @override
-  Future<JobPosition> getJobPosition(int jobPositionId) async {
+  Future<JobPosition> getJobPosition(String jobPositionId) async {
     MappedNetworkServiceResponse response;
     response = await client.get(
-      '/api/v1/job_positions/$jobPositionId',
+      '/api/v1/company/positions/$jobPositionId',
     );
     if (response.networkServiceResponse.success) {
       return JobPosition.fromJson(response.mappedResult);

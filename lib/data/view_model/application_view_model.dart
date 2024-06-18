@@ -10,6 +10,9 @@ class ApplicationViewModel extends ChangeNotifier {
   List<Application> _applications = [];
   List<Application> get applications => _applications;
 
+  List<Application> _selectedApplications = [];
+  List<Application> get selectedApplications => _selectedApplications;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -20,7 +23,8 @@ class ApplicationViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final result = await applicationRepository.apply(candidateId, jobPositionId);
+    final result =
+        await applicationRepository.apply(candidateId, jobPositionId);
     Application? application;
     result.fold(
       (failure) {
@@ -36,16 +40,35 @@ class ApplicationViewModel extends ChangeNotifier {
     return application;
   }
 
-  Future<void> fetchCandidateApplications(String candidateId) async {
+  Future<void> filterApplications(String candidateId, String? statusId) async {
     _isLoading = true;
     notifyListeners();
 
-    final result = await applicationRepository.getCandidateApplications(candidateId);
+    _applications = [];
+    for (var application in selectedApplications) {
+      if (application.candidateId == candidateId &&
+          application.status == statusId || statusId == null) {
+        _applications.add(application);
+      }
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> fetchCandidateApplications(
+      String candidateId, String? statusId) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final result = await applicationRepository.getCandidateApplications(
+        candidateId, statusId);
     result.fold(
       (failure) {
         _errorMessage = failure.toString();
       },
       (applicationListResponseModel) {
+        _selectedApplications = applicationListResponseModel.applications;
         _applications = applicationListResponseModel.applications;
       },
     );
@@ -58,7 +81,8 @@ class ApplicationViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final result = await applicationRepository.getJobPositionApplications(jobPositionId);
+    final result =
+        await applicationRepository.getJobPositionApplications(jobPositionId);
     result.fold(
       (failure) {
         _errorMessage = failure.toString();

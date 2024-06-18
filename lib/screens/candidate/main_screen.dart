@@ -91,7 +91,8 @@ class _MainScreenState extends State<MainScreen> {
             FloatingActionButton(
               heroTag: 'more',
               onPressed: () {
-                // Define your action for this button
+                final jobPositionId = matchEngine.currentItem?.content.jobPosition.id;
+                matchEngine.currentItem?.superlikeAction!(jobPositionId);
               },
               child: Icon(Icons.more_horiz),
               backgroundColor: Colors.grey,
